@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profilul Meu - BNR Bank</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/client.css">
+    <style>
+        .profile-header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            margin: 0 auto 20px;
+            border: 5px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        
+        .info-row {
+            display: flex;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            flex: 0 0 200px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .info-value {
+            flex: 1;
+            color: #333;
+        }
+        
+        .stat-badge {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+        
+        .stat-badge:hover {
+            border-color: #3498db;
+            transform: translateY(-3px);
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background: rgba(44, 62, 80, 0.95);">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">
+                <i class="fas fa-university me-2"></i>
+                <strong>BNR Bank</strong>
+                <span class="ms-2 badge bg-light text-dark">Client</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">
+                            <i class="fas fa-home me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="cases.html">
+                            <i class="fas fa-file-contract me-1"></i> Cererile Mele
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="new-case.html">
+                            <i class="fas fa-plus-circle me-1"></i> Cerere Nouă
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="profile.html">
+                            <i class="fas fa-user me-1"></i> Profil
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <span class="nav-link">
+                            <i class="fas fa-user-circle me-1"></i>
+                            <span id="userName">Client</span>
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../auth/logout.html">
+                            <i class="fas fa-sign-out-alt me-1"></i> Deconectare
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Хедер профиля -->
+    <div class="profile-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-6 fw-bold">
+                        <i class="fas fa-user-circle me-2"></i>
+                        Profilul Meu
+                    </h1>
+                    <p class="lead mb-0">
+                        Gestionează-ți informațiile personale și preferințele
+                    </p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="badge bg-light text-dark fs-6 p-2">
+                        <i class="fas fa-bank me-1"></i>
+                        <span id="currentBank">BNR</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <div class="row">
+            <!-- Левая колонка - информация профиля -->
+            <div class="col-lg-8">
+                <div class="profile-card">
+                    <div class="text-center mb-4">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3 id="fullName">Nume Client</h3>
+                        <p class="text-muted" id="clientEmail">client@example.com</p>
+                        <button class="btn btn-outline-primary btn-sm" onclick="editProfile()">
+                            <i class="fas fa-edit me-1"></i> Editează Profil
+                        </button>
+                    </div>
+                    
+                    <h5 class="mb-4">
+                        <i class="fas fa-info-circle me-2 text-primary"></i>
+                        Informații Personale
+                    </h5>
+                    
+                    <div class="info-row">
+                        <div class="info-label">Nume complet</div>
+                        <div class="info-value" id="infoFullName">-</div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">Email</div>
+                        <div class="info-value" id="infoEmail">-</div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">Telefon</div>
+                        <div class="info-value" id="infoPhone">-</div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">Nume utilizator</div>
+                        <div class="info-value" id="infoUsername">-</div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">Rol</div>
+                        <div class="info-value">
+                            <span class="badge bg-primary">Client</span>
+                        </div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">Bancă curentă</div>
+                        <div class="info-value" id="infoBank">-</div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">Data înregistrării</div>
+                        <div class="info-value" id="infoJoinDate">-</div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">Ultima autentificare</div>
+                        <div class="info-value" id="infoLastLogin">-</div>
+                    </div>
+                </div>
+
+                <!-- Безопасность -->
+                <div class="profile-card">
+                    <h5 class="mb-4">
+                        <i class="fas fa-shield-alt me-2 text-primary"></i>
+                        Securitate
+                    </h5>
+                    
+                    <div class="info-row">
+                        <div class="info-label">Parolă</div>
+                        <div class="info-value">
+                            ••••••••••
+                            <button class="btn btn-sm btn-outline-secondary ms-3" onclick="changePassword()">
+                                <i class="fas fa-key me-1"></i> Schimbă parola
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">Autentificare în doi pași</div>
+                        <div class="info-value">
+                            <span class="badge bg-secondary">Dezactivată</span>
+                            <button class="btn btn-sm btn-outline-primary ms-3">
+                                <i class="fas fa-mobile-alt me-1"></i> Activează
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">Notificări email</div>
+                        <div class="info-value">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                                <label class="form-check-label" for="emailNotifications">Active</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">Notificări SMS</div>
+                        <div class="info-value">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="smsNotifications">
+                                <label class="form-check-label" for="smsNotifications">Active</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Правая колонка - статистика -->
+            <div class="col-lg-4">
+                <!-- Статистика -->
+                <div class="profile-card">
+                    <h5 class="mb-4">
+                        <i class="fas fa-chart-bar me-2 text-primary"></i>
+                        Statistici
+                    </h5>
+                    
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="stat-badge">
+                                <div class="stat-number" id="statTotalCases">0</div>
+                                <div class="stat-label">Total Cereri</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-6">
+                            <div class="stat-badge">
+                                <div class="stat-number" id="statActiveCases">0</div>
+                                <div class="stat-label">Cereri Active</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-6">
+                            <div class="stat-badge">
+                                <div class="stat-number" id="statApprovedCases">0</div>
+                                <div class="stat-label">Aprobate</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-6">
+                            <div class="stat-badge">
+                                <div class="stat-number" id="statPendingCases">0</div>
+                                <div class="stat-label">În Așteptare</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Быстрые действия -->
+                <div class="profile-card">
+                    <h5 class="mb-4">
+                        <i class="fas fa-bolt me-2 text-primary"></i>
+                        Acțiuni Rapide
+                    </h5>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="new-case.html" class="btn btn-success">
+                            <i class="fas fa-plus-circle me-2"></i> Cerere Nouă
+                        </a>
+                        <a href="cases.html" class="btn btn-outline-primary">
+                            <i class="fas fa-list me-2"></i> Vezi Toate Cererile
+                        </a>
+                        <button class="btn btn-outline-secondary" onclick="downloadData()">
+                            <i class="fas fa-download me-2"></i> Descarcă Datele
+                        </button>
+                        <button class="btn btn-outline-danger" onclick="deleteAccount()">
+                            <i class="fas fa-trash me-2"></i> Șterge Contul
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Контактная информация -->
+                <div class="profile-card">
+                    <h5 class="mb-4">
+                        <i class="fas fa-headset me-2 text-primary"></i>
+                        Asistență
+                    </h5>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-question-circle me-2"></i>
+                        Ai nevoie de ajutor?
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary" onclick="contactSupport()">
+                            <i class="fas fa-comment me-2"></i> Contactează Suport
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="viewFAQ()">
+                            <i class="fas fa-question me-2"></i> Întrebări Frecvente
+                        </button>
+                        <a href="#" class="btn btn-outline-info">
+                            <i class="fas fa-file-pdf me-2"></i> Ghid Utilizator
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer class="bg-light border-top mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text-muted">
+                        <i class="fas fa-university me-1"></i>
+                        BNR Bank - Panou Client | Profil Utilizator
+                    </span>
+                </div>
+                <div class="col-md-6 text-end">
+                    <span class="text-muted">
+                        <i class="fas fa-clock me-1"></i>
+                        <span id="currentTime">00:00:00</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Модальное окно редактирования профиля -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-edit me-2"></i>
+                        Editează Profil
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProfileForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Prenume *</label>
+                                <input type="text" class="form-control" id="editFirstName" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nume *</label>
+                                <input type="text" class="form-control" id="editLastName" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email *</label>
+                                <input type="email" class="form-control" id="editEmail" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Telefon *</label>
+                                <input type="tel" class="form-control" id="editPhone" required>
+                            </div>
+                            
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Adresă</label>
+                                <textarea class="form-control" id="editAddress" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Anulează
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="saveProfile()">
+                        <i class="fas fa-save me-1"></i> Salvează
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно смены пароля -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-key me-2"></i>
+                        Schimbă Parola
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="changePasswordForm">
+                        <div class="mb-3">
+                            <label class="form-label">Parola curentă *</label>
+                            <input type="password" class="form-control" id="currentPassword" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Parola nouă *</label>
+                            <input type="password" class="form-control" id="newPassword" required minlength="8">
+                            <small class="text-muted">Minimum 8 caractere</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Confirmă parola nouă *</label>
+                            <input type="password" class="form-control" id="confirmPassword" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Anulează
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="updatePassword()">
+                        <i class="fas fa-save me-1"></i> Actualizează
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Mock данные пользователя
+        const mockUserData = {
+            firstName: 'Ion',
+            lastName: 'Popescu',
+            email: 'ion.popescu@example.com',
+            phone: '+40 721 123 456',
+            username: 'ion_popescu',
+            address: 'Str. Mihai Eminescu, Nr. 10, București',
+            joinDate: '15.01.2023',
+            lastLogin: '05.01.2024 14:30',
+            bank: 'Banca Națională a României (BNR)',
+            stats: {
+                totalCases: 8,
+                activeCases: 3,
+                approvedCases: 4,
+                pendingCases: 1
+            }
+        };
+        
+        // Проверка авторизации
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const bank = JSON.parse(localStorage.getItem('selectedBank'));
+            
+            if (!user || user.role !== 'client') {
+                window.location.href = '../auth/login.html';
+                return;
+            }
+            
+            // Обновление времени
+            function updateTime() {
+                const now = new Date();
+                document.getElementById('currentTime').textContent = 
+                    now.toLocaleTimeString('ro-RO');
+            }
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            // Загрузка данных профиля
+            loadProfileData();
+            
+            // Установка данных банка
+            if (bank) {
+                document.getElementById('currentBank').textContent = bank.code;
+            }
+        });
+        
+        // Загрузка данных профиля
+        function loadProfileData() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            // Основная информация
+            document.getElementById('fullName').textContent = 
+                `${mockUserData.firstName} ${mockUserData.lastName}`;
+            document.getElementById('clientEmail').textContent = mockUserData.email;
+            document.getElementById('userName').textContent = 
+                `${mockUserData.firstName} ${mockUserData.lastName}`;
+            
+            // Информационные строки
+            document.getElementById('infoFullName').textContent = 
+                `${mockUserData.firstName} ${mockUserData.lastName}`;
+            document.getElementById('infoEmail').textContent = mockUserData.email;
+            document.getElementById('infoPhone').textContent = mockUserData.phone;
+            document.getElementById('infoUsername').textContent = mockUserData.username;
+            document.getElementById('infoBank').textContent = mockUserData.bank;
+            document.getElementById('infoJoinDate').textContent = mockUserData.joinDate;
+            document.getElementById('infoLastLogin').textContent = mockUserData.lastLogin;
+            
+            // Статистика
+            document.getElementById('statTotalCases').textContent = mockUserData.stats.totalCases;
+            document.getElementById('statActiveCases').textContent = mockUserData.stats.activeCases;
+            document.getElementById('statApprovedCases').textContent = mockUserData.stats.approvedCases;
+            document.getElementById('statPendingCases').textContent = mockUserData.stats.pendingCases;
+            
+            // Заполнение формы редактирования
+            document.getElementById('editFirstName').value = mockUserData.firstName;
+            document.getElementById('editLastName').value = mockUserData.lastName;
+            document.getElementById('editEmail').value = mockUserData.email;
+            document.getElementById('editPhone').value = mockUserData.phone;
+            document.getElementById('editAddress').value = mockUserData.address || '';
+        }
+        
+        // Редактирование профиля
+        function editProfile() {
+            const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+            modal.show();
+        }
+        
+        // Сохранение профиля
+        function saveProfile() {
+            const firstName = document.getElementById('editFirstName').value;
+            const lastName = document.getElementById('editLastName').value;
+            const email = document.getElementById('editEmail').value;
+            const phone = document.getElementById('editPhone').value;
+            const address = document.getElementById('editAddress').value;
+            
+            // Валидация
+            if (!firstName || !lastName || !email || !phone) {
+                alert('Vă rugăm să completați toate câmpurile obligatorii');
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                alert('Vă rugăm să introduceți un email valid');
+                return;
+            }
+            
+            // Обновление данных
+            mockUserData.firstName = firstName;
+            mockUserData.lastName = lastName;
+            mockUserData.email = email;
+            mockUserData.phone = phone;
+            mockUserData.address = address;
+            
+            // Обновление UI
+            loadProfileData();
+            
+            // Закрытие модального окна
+            bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();
+            
+            // Показ сообщения об успехе
+            alert('Profilul a fost actualizat cu succes!');
+        }
+        
+        // Валидация email
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        // Смена пароля
+        function changePassword() {
+            const modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+            modal.show();
+        }
+        
+        // Обновление пароля
+        function updatePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Валидация
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                alert('Vă rugăm să completați toate câmpurile');
+                return;
+            }
+            
+            if (newPassword.length < 8) {
+                alert('Parola trebuie să aibă cel puțin 8 caractere');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('Parolele nu coincid');
+                return;
+            }
+            
+            // В реальном приложении здесь был бы запрос к API
+            // Для демо просто показываем сообщение
+            
+            // Сброс формы
+            document.getElementById('changePasswordForm').reset();
+            
+            // Закрытие модального окна
+            bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
+            
+            alert('Parola a fost schimbată cu succes!');
+        }
+        
+        // Скачивание данных
+        function downloadData() {
+            alert('Se generează fișierul cu datele dvs...');
+            // В реальном приложении здесь был бы экспорт данных
+        }
+        
+        // Удаление аккаунта
+        function deleteAccount() {
+            if (confirm('Sunteți sigur că doriți să ștergeți contul? Această acțiune este ireversibilă.')) {
+                if (confirm('ATENȚIE: Toate datele vor fi șterse permanent. Continuați?')) {
+                    alert('Contul va fi șters. Veți fi deconectat.');
+                    // В реальном приложении здесь был бы запрос к API
+                    // Для демо просто выходим
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('selectedBank');
+                    localStorage.removeItem('selectedBankId');
+                    window.location.href = '../auth/login.html';
+                }
+            }
+        }
+        
+        // Контакт с поддержкой
+        function contactSupport() {
+            alert('Redirecționare către formularul de contact...');
+            // В реальном приложении здесь была бы ссылка на страницу поддержки
+        }
+        
+        // Просмотр FAQ
+        function viewFAQ() {
+            alert('Se încarcă întrebările frecvente...');
+            // В реальном приложении здесь была бы ссылка на FAQ
+        }
+    </script>
+</body>
+</html>

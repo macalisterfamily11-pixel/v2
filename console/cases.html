@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои Дела - BNR Bank</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/console.css">
+</head>
+<body class="console-dashboard">
+    <!-- Навигация -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background: rgba(0, 105, 92, 0.95);">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">
+                <i class="fas fa-university me-2"></i>
+                <strong>BNR Bank</strong>
+                <span class="ms-2 badge bg-light text-dark">Оператор</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">
+                            <i class="fas fa-tachometer-alt me-1"></i> Дашборд
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="cases.html">
+                            <i class="fas fa-clipboard-list me-1"></i> Мои дела
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tasks.html">
+                            <i class="fas fa-tasks me-1"></i> Задачи
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="consoleDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-tie me-1"></i>
+                            <span id="consoleName">Оператор</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Профиль</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="../auth/logout.html"><i class="fas fa-sign-out-alt me-2"></i> Выйти</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Хедер -->
+    <div class="console-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-6 fw-bold console-welcome">
+                        <i class="fas fa-folder-open me-2"></i>
+                        Мои Дела
+                    </h1>
+                    <p class="lead mb-0">
+                        Все дела, назначенные вам для обработки
+                    </p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="console-bank-badge">
+                        <i class="fas fa-bank me-1"></i>
+                        <span id="consoleBank">BNR</span>
+                        <button class="btn btn-light btn-sm ms-3" onclick="takeNewCase()">
+                            <i class="fas fa-plus me-1"></i> Взять дело
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="container mt-4">
+        <!-- Фильтры -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Статус:</label>
+                        <select class="form-select" id="statusFilter" onchange="filterCases()">
+                            <option value="all">Все статусы</option>
+                            <option value="pending">В ожидании</option>
+                            <option value="review">На проверке</option>
+                            <option value="approved">Одобрено</option>
+                            <option value="rejected">Отклонено</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label">Приоритет:</label>
+                        <select class="form-select" id="priorityFilter" onchange="filterCases()">
+                            <option value="all">Все приоритеты</option>
+                            <option value="urgent">Срочно</option>
+                            <option value="high">Высокий</option>
+                            <option value="medium">Средний</option>
+                            <option value="low">Низкий</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label">Тип кредита:</label>
+                        <select class="form-select" id="typeFilter" onchange="filterCases()">
+                            <option value="all">Все типы</option>
+                            <option value="ipotecar">Ипотечный</option>
+                            <option value="consumer">Потребительский</option>
+                            <option value="auto">Автокредит</option>
+                            <option value="studii">На обучение</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label">Сортировка:</label>
+                        <select class="form-select" id="sortFilter" onchange="filterCases()">
+                            <option value="newest">Сначала новые</option>
+                            <option value="oldest">Сначала старые</option>
+                            <option value="priority">По приоритету</option>
+                            <option value="amount">По сумме</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Сетка дел -->
+        <div class="task-grid" id="casesGrid">
+            <!-- Данные загружаются через JS -->
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-spinner fa-spin fa-2x text-muted mb-3"></i>
+                    <p class="text-muted">Загрузка дел...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Пагинация -->
+        <div class="d-flex justify-content-center mt-4">
+            <nav aria-label="Навигация">
+                <ul class="pagination" id="pagination">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer class="bg-light border-top mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text-muted">
+                        <i class="fas fa-university me-1"></i>
+                        BNR Bank - Мои Дела
+                    </span>
+                </div>
+                <div class="col-md-6 text-end">
+                    <span class="text-muted">
+                        <i class="fas fa-clock me-1"></i>
+                        <span id="currentTime">00:00:00</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Модальное окно взятия дела -->
+    <div class="modal fade" id="takeCaseModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-hand-paper me-2"></i>
+                        Взять новое дело
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Выбрать</th>
+                                    <th>Номер дела</th>
+                                    <th>Клиент</th>
+                                    <th>Тип</th>
+                                    <th>Сумма</th>
+                                    <th>Приоритет</th>
+                                    <th>Дата</th>
+                                </tr>
+                            </thead>
+                            <tbody id="availableCases">
+                                <tr>
+                                    <td><input type="radio" name="selectedCase" value="1"></td>
+                                    <td>CASE-2024-016</td>
+                                    <td>Александру Василеску</td>
+                                    <td>Ипотечный</td>
+                                    <td>180,000 RON</td>
+                                    <td><span class="badge bg-warning">Средний</span></td>
+                                    <td>16.01.2024</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" name="selectedCase" value="2"></td>
+                                    <td>CASE-2024-017</td>
+                                    <td>Кристина Попеску</td>
+                                    <td>Автокредит</td>
+                                    <td>35,000 RON</td>
+                                    <td><span class="badge bg-success">Низкий</span></td>
+                                    <td>17.01.2024</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" name="selectedCase" value="3"></td>
+                                    <td>CASE-2024-018</td>
+                                    <td>Раду Йонеску</td>
+                                    <td>Потребительский</td>
+                                    <td>25,000 RON</td>
+                                    <td><span class="badge bg-danger">Срочно</span></td>
+                                    <td>18.01.2024</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmTakeCase()">Взять выбранное</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const consoleCases = [
+            {
+                id: 1,
+                number: 'CASE-2024-014',
+                client: 'Мария Ионеску',
+                type: 'Автокредит',
+                amount: 45000,
+                status: 'review',
+                priority: 'high',
+                date: '14.01.2024',
+                description: 'Аннуляция кредита на покупку автомобиля',
+                documents: 3,
+                notes: 2,
+                deadline: '17.01.2024'
+            },
+            {
+                id: 2,
+                number: 'CASE-2024-013',
+                client: 'Андрей Георгеску',
+                type: 'Кредит на обучение',
+                amount: 75000,
+                status: 'pending',
+                priority: 'medium',
+                date: '13.01.2024',
+                description: 'Аннуляция образовательного кредита',
+                documents: 4,
+                notes: 1,
+                deadline: '20.01.2024'
+            },
+            {
+                id: 3,
+                number: 'CASE-2024-011',
+                client: 'Михай Думитреску',
+                type: 'Потребительский кредит',
+                amount: 35000,
+                status: 'review',
+                priority: 'medium',
+                date: '11.01.2024',
+                description: 'Аннуляция потребительского кредита',
+                documents: 2,
+                notes: 3,
+                deadline: '25.01.2024'
+            },
+            {
+                id: 4,
+                number: 'CASE-2024-010',
+                client: 'Ана Станку',
+                type: 'Ипотечный кредит',
+                amount: 85000,
+                status: 'pending',
+                priority: 'high',
+                date: '10.01.2024',
+                description: 'Аннуляция ипотечного кредита',
+                documents: 5,
+                notes: 0,
+                deadline: '28.01.2024'
+            },
+            {
+                id: 5,
+                number: 'CASE-2024-009',
+                client: 'Кристиан Молдовяну',
+                type: 'Ипотечный кредит',
+                amount: 95000,
+                status: 'approved',
+                priority: 'low',
+                date: '09.01.2024',
+                description: 'Аннуляция одобрена',
+                documents: 4,
+                notes: 5,
+                deadline: '15.01.2024'
+            },
+            {
+                id: 6,
+                number: 'CASE-2024-008',
+                client: 'Раду Йонеску',
+                type: 'Автокредит',
+                amount: 55000,
+                status: 'rejected',
+                priority: 'medium',
+                date: '08.01.2024',
+                description: 'Аннуляция отклонена',
+                documents: 3,
+                notes: 2,
+                deadline: '12.01.2024'
+            },
+            {
+                id: 7,
+                number: 'CASE-2024-007',
+                client: 'Даниэла Попа',
+                type: 'Потребительский кредит',
+                amount: 65000,
+                status: 'pending',
+                priority: 'urgent',
+                date: '07.01.2024',
+                description: 'Срочная аннуляция',
+                documents: 2,
+                notes: 1,
+                deadline: '10.01.2024'
+            },
+            {
+                id: 8,
+                number: 'CASE-2024-006',
+                client: 'Стефан Негру',
+                type: 'Кредит на обучение',
+                amount: 125000,
+                status: 'review',
+                priority: 'high',
+                date: '06.01.2024',
+                description: 'Аннуляция кредита на магистратуру',
+                documents: 6,
+                notes: 4,
+                deadline: '30.01.2024'
+            }
+        ];
+        
+        let filteredCases = [...consoleCases];
+        let currentPage = 1;
+        const casesPerPage = 6;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user || user.role !== 'console') {
+                window.location.href = '../auth/login.html';
+                return;
+            }
+            
+            document.getElementById('consoleName').textContent = 
+                user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.username;
+            
+            function updateTime() {
+                const now = new Date();
+                document.getElementById('currentTime').textContent = now.toLocaleTimeString('ru-RU');
+            }
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            loadCases();
+        });
+        
+        function loadCases() {
+            const start = (currentPage - 1) * casesPerPage;
+            const end = start + casesPerPage;
+            const pageCases = filteredCases.slice(start, end);
+            
+            const casesGrid = document.getElementById('casesGrid');
+            let casesHTML = '';
+            
+            if (pageCases.length === 0) {
+                casesHTML = `
+                    <div class="col-12">
+                        <div class="text-center py-5">
+                            <i class="fas fa-folder-open fa-2x text-muted mb-3"></i>
+                            <h5>Нет дел</h5>
+                            <p class="text-muted">Нет дел, соответствующих выбранным фильтрам</p>
+                            <button class="btn btn-primary" onclick="takeNewCase()">
+                                <i class="fas fa-plus me-1"></i> Взять новое дело
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                pageCases.forEach(caseItem => {
+                    const priorityClass = caseItem.priority;
+                    const statusClass = caseItem.status;
+                    const statusText = getStatusText(caseItem.status);
+                    const priorityText = getPriorityText(caseItem.priority);
+                    
+                    casesHTML += `
+                        <div class="task-card ${priorityClass}">
+                            <div class="task-header">
+                                <div>
+                                    <div class="task-client">${caseItem.client}</div>
+                                    <div class="task-type">${caseItem.type}</div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge ${getStatusBadgeClass(caseItem.status)}">
+                                        ${statusText}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="task-details">
+                                <div class="task-amount">${caseItem.amount.toLocaleString('ru-RU')} RON</div>
+                                <div class="task-description">${caseItem.description}</div>
+                            </div>
+                            
+                            <div class="task-footer">
+                                <div>
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        Срок: ${caseItem.deadline}
+                                    </small>
+                                    <br>
+                                    <small class="text-muted">
+                                        <i class="fas fa-file me-1"></i>
+                                        Документов: ${caseItem.documents} | 
+                                        <i class="fas fa-sticky-note me-1"></i>
+                                        Заметок: ${caseItem.notes}
+                                    </small>
+                                </div>
+                                <div class="task-actions">
+                                    <button class="action-btn primary" onclick="openCase(${caseItem.id})">
+                                        <i class="fas fa-eye me-1"></i> Открыть
+                                    </button>
+                                    <button class="action-btn secondary" onclick="processCase(${caseItem.id})">
+                                        <i class="fas fa-play me-1"></i> Обработать
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            casesGrid.innerHTML = casesHTML;
+            updatePagination();
+        }
+        
+        function getStatusText(status) {
+            const statusMap = {
+                'pending': 'В ожидании',
+                'review': 'На проверке',
+                'approved': 'Одобрено',
+                'rejected': 'Отклонено'
+            };
+            return statusMap[status] || status;
+        }
+        
+        function getPriorityText(priority) {
+            const priorityMap = {
+                'urgent': 'Срочно',
+                'high': 'Высокий',
+                'medium': 'Средний',
+                'low': 'Низкий'
+            };
+            return priorityMap[priority] || priority;
+        }
+        
+        function getStatusBadgeClass(status) {
+            const badgeMap = {
+                'pending': 'bg-warning',
+                'review': 'bg-info',
+                'approved': 'bg-success',
+                'rejected': 'bg-danger'
+            };
+            return badgeMap[status] || 'bg-secondary';
+        }
+        
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredCases.length / casesPerPage);
+            const pagination = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+            
+            pagination.style.display = 'flex';
+            
+            let paginationHTML = '';
+            
+            // Previous button
+            paginationHTML += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+            `;
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHTML += `
+                    <li class="page-item ${currentPage === i ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                    </li>
+                `;
+            }
+            
+            // Next button
+            paginationHTML += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            `;
+            
+            pagination.innerHTML = paginationHTML;
+        }
+        
+        function changePage(page) {
+            if (page < 1 || page > Math.ceil(filteredCases.length / casesPerPage)) return;
+            currentPage = page;
+            loadCases();
+        }
+        
+        function filterCases() {
+            const status = document.getElementById('statusFilter').value;
+            const priority = document.getElementById('priorityFilter').value;
+            const type = document.getElementById('typeFilter').value;
+            const sort = document.getElementById('sortFilter').value;
+            
+            filteredCases = consoleCases.filter(caseItem => {
+                if (status !== 'all' && caseItem.status !== status) return false;
+                if (priority !== 'all' && caseItem.priority !== priority) return false;
+                if (type !== 'all' && caseItem.type !== type) return false;
+                return true;
+            });
+            
+            // Сортировка
+            switch(sort) {
+                case 'newest':
+                    filteredCases.sort((a, b) => new Date(b.date.split('.').reverse().join('-')) - new Date(a.date.split('.').reverse().join('-')));
+                    break;
+                case 'oldest':
+                    filteredCases.sort((a, b) => new Date(a.date.split('.').reverse().join('-')) - new Date(b.date.split('.').reverse().join('-')));
+                    break;
+                case 'priority':
+                    const priorityOrder = { 'urgent': 0, 'high': 1, 'medium': 2, 'low': 3 };
+                    filteredCases.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+                    break;
+                case 'amount':
+                    filteredCases.sort((a, b) => b.amount - a.amount);
+                    break;
+            }
+            
+            currentPage = 1;
+            loadCases();
+        }
+        
+        function takeNewCase() {
+            const modal = new bootstrap.Modal(document.getElementById('takeCaseModal'));
+            modal.show();
+        }
+        
+        function confirmTakeCase() {
+            const selected = document.querySelector('input[name="selectedCase"]:checked');
+            if (!selected) {
+                alert('Выберите дело для взятия');
+                return;
+            }
+            
+            alert(`Дело ${selected.value} взято в обработку`);
+            bootstrap.Modal.getInstance(document.getElementById('takeCaseModal')).hide();
+        }
+        
+        function openCase(caseId) {
+            alert(`Открытие дела ${caseId}...`);
+            // В реальном приложении здесь был бы переход на страницу дела
+        }
+        
+        function processCase(caseId) {
+            alert(`Обработка дела ${caseId}...`);
+            // В реальном приложении здесь был бы переход на страницу обработки
+        }
+    </script>
+</body>
+</html>

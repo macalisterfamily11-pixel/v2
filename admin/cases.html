@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление Заявками - BNR Bank</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-dashboard">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background: rgba(26, 35, 126, 0.95);">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">
+                <i class="fas fa-university me-2"></i>
+                <strong>BNR Bank</strong>
+                <span class="ms-2 badge bg-light text-primary">Админ</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">
+                            <i class="fas fa-tachometer-alt me-1"></i> Дашборд
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="cases.html">
+                            <i class="fas fa-clipboard-list me-1"></i> Заявки
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="users.html">
+                            <i class="fas fa-users me-1"></i> Пользователи
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="banks.html">
+                            <i class="fas fa-bank me-1"></i> Банки
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-shield me-1"></i>
+                            <span id="adminName">Администратор</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog me-2"></i> Профиль</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="../auth/logout.html"><i class="fas fa-sign-out-alt me-2"></i> Выйти</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="admin-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-6 fw-bold admin-welcome">
+                        <i class="fas fa-clipboard-list me-2"></i>
+                        Управление Заявками
+                    </h1>
+                    <p class="lead mb-0">Все заявки на аннуляцию кредитов</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="admin-bank-badge">
+                        <i class="fas fa-bank me-1"></i>
+                        <span id="adminBank">BNR</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="admin-filters">
+            <div class="filter-group">
+                <div class="filter-item">
+                    <label class="form-label">Статус:</label>
+                    <select class="form-select" id="statusFilter">
+                        <option value="all">Все статусы</option>
+                        <option value="pending">В ожидании</option>
+                        <option value="review">На рассмотрении</option>
+                        <option value="approved">Одобрено</option>
+                        <option value="rejected">Отклонено</option>
+                    </select>
+                </div>
+                
+                <div class="filter-item">
+                    <label class="form-label">Приоритет:</label>
+                    <select class="form-select" id="priorityFilter">
+                        <option value="all">Все приоритеты</option>
+                        <option value="urgent">Срочно</option>
+                        <option value="high">Высокий</option>
+                        <option value="medium">Средний</option>
+                        <option value="low">Низкий</option>
+                    </select>
+                </div>
+                
+                <div class="filter-item">
+                    <label class="form-label">Работник:</label>
+                    <select class="form-select" id="workerFilter">
+                        <option value="all">Все работники</option>
+                        <option value="1">Мария Ионеску</option>
+                        <option value="2">Андрей Попеску</option>
+                        <option value="3">Ана Маринеску</option>
+                    </select>
+                </div>
+                
+                <div class="filter-item">
+                    <label class="form-label">Банк:</label>
+                    <select class="form-select" id="bankFilter">
+                        <option value="all">Все банки</option>
+                        <option value="BNR">BNR</option>
+                        <option value="BCR">BCR</option>
+                        <option value="BRD">BRD</option>
+                    </select>
+                </div>
+                
+                <div class="filter-item">
+                    <button class="btn btn-primary" onclick="applyFilters()">
+                        <i class="fas fa-filter me-1"></i> Применить
+                    </button>
+                    <button class="btn btn-outline-secondary ms-2" onclick="resetFilters()">
+                        <i class="fas fa-redo me-1"></i> Сбросить
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-table-container">
+            <div class="table-header p-3 border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>
+                    Список заявок
+                    <span class="badge bg-primary ms-2" id="casesCount">0</span>
+                </h5>
+                <div>
+                    <button class="btn btn-sm btn-success" onclick="exportCases()">
+                        <i class="fas fa-download me-1"></i> Экспорт
+                    </button>
+                    <button class="btn btn-sm btn-primary" onclick="bulkAssign()">
+                        <i class="fas fa-user-plus me-1"></i> Назначить
+                    </button>
+                </div>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th width="50">
+                                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                            </th>
+                            <th>Номер дела</th>
+                            <th>Клиент</th>
+                            <th>Банк</th>
+                            <th>Сумма</th>
+                            <th>Статус</th>
+                            <th>Приоритет</th>
+                            <th>Работник</th>
+                            <th>Дата</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="casesTable">
+                        <tr>
+                            <td colspan="10" class="text-center py-5">
+                                <i class="fas fa-spinner fa-spin fa-2x text-muted mb-3"></i>
+                                <p class="text-muted">Загрузка данных...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="table-footer p-3 border-top">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-muted" id="paginationInfo">
+                            Показано 0 из 0 записей
+                        </small>
+                    </div>
+                    <nav aria-label="Навигация">
+                        <ul class="pagination pagination-sm mb-0" id="pagination">
+                            <li class="page-item disabled"><a class="page-link" href="#">«</a></li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">»</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-light border-top mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text-muted">
+                        <i class="fas fa-university me-1"></i>
+                        BNR Bank - Управление Заявками
+                    </span>
+                </div>
+                <div class="col-md-6 text-end">
+                    <span class="text-muted">
+                        <i class="fas fa-clock me-1"></i>
+                        <span id="currentTime">00:00:00</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const mockAdminCases = [
+            {id:1,number:'CASE-2024-015',client:'Ион Попеску',bank:'BNR',amount:150000,status:'pending',priority:'high',worker:'Мария Ионеску',date:'15.01.2024'},
+            {id:2,number:'CASE-2024-014',client:'Мария Ионеску',bank:'BCR',amount:45000,status:'review',priority:'medium',worker:'Андрей Попеску',date:'14.01.2024'},
+            {id:3,number:'CASE-2024-013',client:'Андрей Георгеску',bank:'BRD',amount:75000,status:'approved',priority:'low',worker:'Ана Маринеску',date:'13.01.2024'},
+            {id:4,number:'CASE-2024-012',client:'Елена Маринеску',bank:'ING',amount:120000,status:'urgent',priority:'urgent',worker:'',date:'12.01.2024'},
+            {id:5,number:'CASE-2024-011',client:'Михай Думитреску',bank:'Raiffeisen',amount:35000,status:'rejected',priority:'medium',worker:'Ион Ваcилеску',date:'11.01.2024'},
+            {id:6,number:'CASE-2024-010',client:'Ана Станку',bank:'CEC',amount:85000,status:'pending',priority:'high',worker:'',date:'10.01.2024'},
+            {id:7,number:'CASE-2024-009',client:'Кристиан Молдовяну',bank:'UniCredit',amount:95000,status:'review',priority:'medium',worker:'Мария Ионеску',date:'09.01.2024'},
+            {id:8,number:'CASE-2024-008',client:'Раду Йонеску',bank:'Alpha',amount:55000,status:'approved',priority:'low',worker:'Андрей Попеску',date:'08.01.2024'},
+            {id:9,number:'CASE-2024-007',client:'Даниэла Попа',bank:'OTP',amount:65000,status:'pending',priority:'urgent',worker:'',date:'07.01.2024'},
+            {id:10,number:'CASE-2024-006',client:'Стефан Негру',bank:'Garanti',amount:125000,status:'review',priority:'high',worker:'Ана Маринеску',date:'06.01.2024'}
+        ];
+        
+        let currentPage = 1;
+        const casesPerPage = 10;
+        let filteredCases = [...mockAdminCases];
+        let selectedCases = new Set();
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user || !(user.role === 'admin' || user.role === 'super_admin')) {
+                window.location.href = '../auth/login.html';
+                return;
+            }
+            
+            document.getElementById('adminName').textContent = 
+                user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.username;
+            
+            function updateTime() {
+                const now = new Date();
+                document.getElementById('currentTime').textContent = now.toLocaleTimeString('ru-RU');
+            }
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            loadCases();
+        });
+        
+        function loadCases() {
+            const start = (currentPage - 1) * casesPerPage;
+            const end = start + casesPerPage;
+            const pageCases = filteredCases.slice(start, end);
+            
+            const tableBody = document.getElementById('casesTable');
+            let casesHTML = '';
+            
+            pageCases.forEach(caseItem => {
+                const statusClass = `status-${caseItem.status}`;
+                const statusText = getStatusText(caseItem.status);
+                const priorityClass = `priority-${caseItem.priority}`;
+                const priorityText = getPriorityText(caseItem.priority);
+                
+                casesHTML += `
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="case-checkbox" value="${caseItem.id}" 
+                                   onchange="toggleCaseSelection(${caseItem.id})" 
+                                   ${selectedCases.has(caseItem.id) ? 'checked' : ''}>
+                        </td>
+                        <td><strong>${caseItem.number}</strong></td>
+                        <td>${caseItem.client}</td>
+                        <td><span class="badge bg-secondary">${caseItem.bank}</span></td>
+                        <td>${caseItem.amount.toLocaleString('ru-RU')} RON</td>
+                        <td>
+                            <span class="case-card-status ${statusClass}">
+                                ${statusText}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="priority-badge ${priorityClass}">
+                                ${priorityText}
+                            </span>
+                        </td>
+                        <td>
+                            ${caseItem.worker ? 
+                                `<span class="badge bg-info">${caseItem.worker}</span>` : 
+                                '<span class="text-muted">Не назначен</span>'
+                            }
+                        </td>
+                        <td>${caseItem.date}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-primary" onclick="viewCase(${caseItem.id})">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-outline-success" onclick="editCase(${caseItem.id})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-outline-danger" onclick="deleteCase(${caseItem.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableBody.innerHTML = casesHTML;
+            updatePagination();
+            document.getElementById('casesCount').textContent = filteredCases.length;
+        }
+        
+        function getStatusText(status) {
+            const statusMap = {
+                'pending': 'В ожидании',
+                'review': 'На рассмотрении',
+                'approved': 'Одобрено',
+                'rejected': 'Отклонено',
+                'urgent': 'Срочно'
+            };
+            return statusMap[status] || status;
+        }
+        
+        function getPriorityText(priority) {
+            const priorityMap = {
+                'urgent': 'Срочно',
+                'high': 'Высокий',
+                'medium': 'Средний',
+                'low': 'Низкий'
+            };
+            return priorityMap[priority] || priority;
+        }
+        
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredCases.length / casesPerPage);
+            const pagination = document.getElementById('pagination');
+            const start = (currentPage - 1) * casesPerPage + 1;
+            const end = Math.min(currentPage * casesPerPage, filteredCases.length);
+            
+            document.getElementById('paginationInfo').textContent = 
+                `Показано ${start}-${end} из ${filteredCases.length} записей`;
+            
+            let paginationHTML = '';
+            
+            // Previous button
+            paginationHTML += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">«</a>
+                </li>
+            `;
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHTML += `
+                    <li class="page-item ${currentPage === i ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                    </li>
+                `;
+            }
+            
+            // Next button
+            paginationHTML += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">»</a>
+                </li>
+            `;
+            
+            pagination.innerHTML = paginationHTML;
+        }
+        
+        function changePage(page) {
+            if (page < 1 || page > Math.ceil(filteredCases.length / casesPerPage)) return;
+            currentPage = page;
+            loadCases();
+        }
+        
+        function applyFilters() {
+            const status = document.getElementById('statusFilter').value;
+            const priority = document.getElementById('priorityFilter').value;
+            const worker = document.getElementById('workerFilter').value;
+            const bank = document.getElementById('bankFilter').value;
+            
+            filteredCases = mockAdminCases.filter(caseItem => {
+                if (status !== 'all' && caseItem.status !== status) return false;
+                if (priority !== 'all' && caseItem.priority !== priority) return false;
+                if (worker !== 'all') {
+                    if (worker === 'unassigned' && caseItem.worker !== '') return false;
+                    if (worker !== 'unassigned' && caseItem.worker === '') return false;
+                }
+                if (bank !== 'all' && caseItem.bank !== bank) return false;
+                return true;
+            });
+            
+            currentPage = 1;
+            selectedCases.clear();
+            document.getElementById('selectAll').checked = false;
+            loadCases();
+        }
+        
+        function resetFilters() {
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('priorityFilter').value = 'all';
+            document.getElementById('workerFilter').value = 'all';
+            document.getElementById('bankFilter').value = 'all';
+            
+            filteredCases = [...mockAdminCases];
+            currentPage = 1;
+            selectedCases.clear();
+            document.getElementById('selectAll').checked = false;
+            loadCases();
+        }
+        
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll').checked;
+            const checkboxes = document.querySelectorAll('.case-checkbox');
+            
+            if (selectAll) {
+                const start = (currentPage - 1) * casesPerPage;
+                const end = start + casesPerPage;
+                const pageCases = filteredCases.slice(start, end);
+                
+                pageCases.forEach(caseItem => {
+                    selectedCases.add(caseItem.id);
+                });
+            } else {
+                const start = (currentPage - 1) * casesPerPage;
+                const end = start + casesPerPage;
+                const pageCases = filteredCases.slice(start, end);
+                
+                pageCases.forEach(caseItem => {
+                    selectedCases.delete(caseItem.id);
+                });
+            }
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll;
+            });
+        }
+        
+        function toggleCaseSelection(caseId) {
+            const checkbox = document.querySelector(`.case-checkbox[value="${caseId}"]`);
+            if (checkbox.checked) {
+                selectedCases.add(caseId);
+            } else {
+                selectedCases.delete(caseId);
+            }
+            
+            // Update select all checkbox
+            const checkboxes = document.querySelectorAll('.case-checkbox');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            document.getElementById('selectAll').checked = allChecked;
+        }
+        
+        function viewCase(caseId) {
+            alert(`Просмотр дела ${caseId}`);
+        }
+        
+        function editCase(caseId) {
+            alert(`Редактирование дела ${caseId}`);
+        }
+        
+        function deleteCase(caseId) {
+            if (confirm(`Удалить дело ${caseId}?`)) {
+                alert(`Дело ${caseId} удалено`);
+            }
+        }
+        
+        function exportCases() {
+            alert('Экспорт данных в Excel...');
+        }
+        
+        function bulkAssign() {
+            if (selectedCases.size === 0) {
+                alert('Выберите хотя бы одно дело');
+                return;
+            }
+            alert(`Назначение ${selectedCases.size} дел работнику...`);
+        }
+    </script>
+</body>
+</html>

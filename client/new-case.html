@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cerere Nouă - BNR Bank</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/client.css">
+    <style>
+        .page-header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        .form-stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .form-stepper::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+        
+        .step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            color: #888;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: 600;
+        }
+        
+        .step.active .step-circle {
+            background: #3498db;
+            color: white;
+        }
+        
+        .step.completed .step-circle {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .step-label {
+            font-size: 14px;
+            color: #888;
+        }
+        
+        .step.active .step-label {
+            color: #3498db;
+            font-weight: 600;
+        }
+        
+        .step.completed .step-label {
+            color: #27ae60;
+        }
+        
+        .form-step {
+            display: none;
+        }
+        
+        .form-step.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background: rgba(44, 62, 80, 0.95);">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">
+                <i class="fas fa-university me-2"></i>
+                <strong>BNR Bank</strong>
+                <span class="ms-2 badge bg-light text-dark">Client</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">
+                            <i class="fas fa-home me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="cases.html">
+                            <i class="fas fa-file-contract me-1"></i> Cererile Mele
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="new-case.html">
+                            <i class="fas fa-plus-circle me-1"></i> Cerere Nouă
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.html">
+                            <i class="fas fa-user me-1"></i> Profil
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <span class="nav-link">
+                            <i class="fas fa-user-circle me-1"></i>
+                            <span id="userName">Client</span>
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../auth/logout.html">
+                            <i class="fas fa-sign-out-alt me-1"></i> Deconectare
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Хедер страницы -->
+    <div class="page-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-6 fw-bold">
+                        <i class="fas fa-plus-circle me-2"></i>
+                        Cerere Nouă de Anulare Credit
+                    </h1>
+                    <p class="lead mb-0">
+                        Completează formularul pentru a depune o cerere de anulare credit
+                    </p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="badge bg-light text-dark fs-6 p-2">
+                        <i class="fas fa-bank me-1"></i>
+                        <span id="currentBank">BNR</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <!-- Степпер -->
+        <div class="form-stepper">
+            <div class="step active" id="step1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Date Credit</div>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Documente</div>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Confirmare</div>
+            </div>
+        </div>
+
+        <!-- Форма -->
+        <div class="client-form-container">
+            <form id="newCaseForm">
+                <!-- Шаг 1: Данные кредита -->
+                <div class="form-step active" id="step1Form">
+                    <div class="form-section">
+                        <h4 class="mb-4">
+                            <i class="fas fa-file-invoice-dollar me-2 text-primary"></i>
+                            Informații Credit
+                        </h4>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tip Credit *</label>
+                                <select class="form-select" name="loan_type" required>
+                                    <option value="">Selectează tipul creditului</option>
+                                    <option value="ipotecar">Credit Ipotecar</option>
+                                    <option value="consumer">Credit de Consum</option>
+                                    <option value="auto">Credit Auto</option>
+                                    <option value="studii">Credit pentru Studii</option>
+                                    <option value="afaceri">Credit de Afaceri</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Suma Creditului (RON) *</label>
+                                <input type="number" class="form-control" name="loan_amount" 
+                                       min="100" step="0.01" required
+                                       placeholder="Introduceți suma creditului">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Descriere *</label>
+                            <textarea class="form-control" name="description" rows="4" 
+                                      placeholder="Descrieți situația și motivul pentru anulare..." 
+                                      required></textarea>
+                            <small class="text-muted">
+                                Descrieți detaliat motivul pentru care solicitați anularea creditului.
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-navigation">
+                        <button type="button" class="btn btn-outline-secondary" onclick="cancelForm()">
+                            <i class="fas fa-times me-1"></i> Anulează
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="nextStep()">
+                            Continuă <i class="fas fa-arrow-right ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Шаг 2: Документы -->
+                <div class="form-step" id="step2Form">
+                    <div class="form-section">
+                        <h4 class="mb-4">
+                            <i class="fas fa-file-upload me-2 text-primary"></i>
+                            Încărcare Documente
+                        </h4>
+                        
+                        <div class="alert alert-info mb-4">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Toate documentele trebuie să fie în format PDF, JPG sau PNG. Dimensiune maximă: 10MB per fișier.
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="file-upload-area" onclick="document.getElementById('contractFile').click()">
+                                    <input type="file" class="d-none" id="contractFile" name="contract_file" accept=".pdf,.jpg,.jpeg,.png" required>
+                                    <i class="fas fa-file-contract fa-3x text-primary mb-3"></i>
+                                    <h5>Contract Credit *</h5>
+                                    <p class="text-muted mb-2">Contractul original de credit</p>
+                                    <small class="text-danger">Obligatoriu</small>
+                                </div>
+                                <div id="contractFilePreview" class="mt-2"></div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="file-upload-area" onclick="document.getElementById('identityFile').click()">
+                                    <input type="file" class="d-none" id="identityFile" name="identity_file" accept=".pdf,.jpg,.jpeg,.png" required>
+                                    <i class="fas fa-id-card fa-3x text-primary mb-3"></i>
+                                    <h5>Document Identitate *</h5>
+                                    <p class="text-muted mb-2">Buletin sau pașaport</p>
+                                    <small class="text-danger">Obligatoriu</small>
+                                </div>
+                                <div id="identityFilePreview" class="mt-2"></div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="file-upload-area" onclick="document.getElementById('incomeFile').click()">
+                                    <input type="file" class="d-none" id="incomeFile" name="income_file" accept=".pdf,.jpg,.jpeg,.png">
+                                    <i class="fas fa-money-bill-wave fa-3x text-primary mb-3"></i>
+                                    <h5>Dovadă Venit</h5>
+                                    <p class="text-muted mb-2">Fluturaș salariu sau alte venituri</p>
+                                    <small class="text-muted">Opțional</small>
+                                </div>
+                                <div id="incomeFilePreview" class="mt-2"></div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="file-upload-area" onclick="document.getElementById('otherFile').click()">
+                                    <input type="file" class="d-none" id="otherFile" name="other_file" accept=".pdf,.jpg,.jpeg,.png">
+                                    <i class="fas fa-file-alt fa-3x text-primary mb-3"></i>
+                                    <h5>Alte Documente</h5>
+                                    <p class="text-muted mb-2">Orice alte documente relevante</p>
+                                    <small class="text-muted">Opțional</small>
+                                </div>
+                                <div id="otherFilePreview" class="mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-navigation">
+                        <button type="button" class="btn btn-outline-secondary" onclick="prevStep()">
+                            <i class="fas fa-arrow-left me-1"></i> Înapoi
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="nextStep()">
+                            Continuă <i class="fas fa-arrow-right ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Шаг 3: Подтверждение -->
+                <div class="form-step" id="step3Form">
+                    <div class="form-section">
+                        <h4 class="mb-4">
+                            <i class="fas fa-check-circle me-2 text-success"></i>
+                            Confirmare Cerere
+                        </h4>
+                        
+                        <div class="alert alert-success mb-4">
+                            <i class="fas fa-check me-2"></i>
+                            Verificați informațiile înainte de a trimite cererea.
+                        </div>
+                        
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">Rezumat Cerere</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Tip Credit:</strong> <span id="summaryType">-</span></p>
+                                        <p><strong>Sumă:</strong> <span id="summaryAmount">-</span></p>
+                                        <p><strong>Descriere:</strong> <span id="summaryDesc">-</span></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Documente:</strong> <span id="summaryDocs">0 fișiere</span></p>
+                                        <p><strong>Data depunerii:</strong> <span id="summaryDate">-</span></p>
+                                        <p><strong>Bancă:</strong> <span id="summaryBank">-</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Prin trimiterea acestei cereri, confirmați că informațiile furnizate sunt corecte și complete.
+                            Cererea va fi procesată în maximum 14 zile lucrătoare.
+                        </div>
+                    </div>
+                    
+                    <div class="form-navigation">
+                        <button type="button" class="btn btn-outline-secondary" onclick="prevStep()">
+                            <i class="fas fa-arrow-left me-1"></i> Înapoi
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-paper-plane me-1"></i> Trimite Cererea
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer class="bg-light border-top mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text-muted">
+                        <i class="fas fa-university me-1"></i>
+                        BNR Bank - Depunere Cerere Anulare Credit
+                    </span>
+                </div>
+                <div class="col-md-6 text-end">
+                    <span class="text-muted">
+                        <i class="fas fa-clock me-1"></i>
+                        <span id="currentTime">00:00:00</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/client.js"></script>
+    <script>
+        let currentStep = 1;
+        const totalSteps = 3;
+        
+        // Проверка авторизации
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const bank = JSON.parse(localStorage.getItem('selectedBank'));
+            
+            if (!user || user.role !== 'client') {
+                window.location.href = '../auth/login.html';
+                return;
+            }
+            
+            // Установка имени пользователя
+            document.getElementById('userName').textContent = 
+                user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.username;
+            
+            // Установка данных банка
+            if (bank) {
+                document.getElementById('currentBank').textContent = bank.code;
+                document.getElementById('summaryBank').textContent = bank.name;
+            }
+            
+            // Обновление времени
+            function updateTime() {
+                const now = new Date();
+                document.getElementById('currentTime').textContent = 
+                    now.toLocaleTimeString('ro-RO');
+                document.getElementById('summaryDate').textContent = 
+                    now.toLocaleDateString('ro-RO');
+            }
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            // Настройка предпросмотра файлов
+            setupFileUploadPreview();
+            
+            // Обработчик отправки формы
+            const form = document.getElementById('newCaseForm');
+            if (form) {
+                form.addEventListener('submit', handleNewCaseSubmit);
+            }
+        });
+        
+        // Переход к следующему шагу
+        function nextStep() {
+            if (currentStep === 1) {
+                // Валидация шага 1
+                if (!validateStep1()) return;
+                updateSummary();
+            } else if (currentStep === 2) {
+                // Валидация шага 2
+                if (!validateStep2()) return;
+            }
+            
+            // Скрыть текущий шаг
+            document.getElementById(`step${currentStep}Form`).classList.remove('active');
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            
+            // Показать следующий шаг
+            currentStep++;
+            document.getElementById(`step${currentStep}Form`).classList.add('active');
+            document.getElementById(`step${currentStep}`).classList.add('active');
+            
+            // Отметить предыдущий шаг как завершенный
+            document.getElementById(`step${currentStep - 1}`).classList.add('completed');
+        }
+        
+        // Переход к предыдущему шагу
+        function prevStep() {
+            // Скрыть текущий шаг
+            document.getElementById(`step${currentStep}Form`).classList.remove('active');
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            
+            // Убрать отметку о завершении
+            document.getElementById(`step${currentStep}`).classList.remove('completed');
+            
+            // Показать предыдущий шаг
+            currentStep--;
+            document.getElementById(`step${currentStep}Form`).classList.add('active');
+            document.getElementById(`step${currentStep}`).classList.add('active');
+        }
+        
+        // Валидация шага 1
+        function validateStep1() {
+            const loanType = document.querySelector('select[name="loan_type"]').value;
+            const loanAmount = document.querySelector('input[name="loan_amount"]').value;
+            const description = document.querySelector('textarea[name="description"]').value;
+            
+            if (!loanType) {
+                alert('Vă rugăm să selectați tipul creditului');
+                return false;
+            }
+            
+            if (!loanAmount || parseFloat(loanAmount) < 100) {
+                alert('Suma creditului trebuie să fie cel puțin 100 RON');
+                return false;
+            }
+            
+            if (!description || description.length < 10) {
+                alert('Vă rugăm să oferiți o descriere detaliată');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Валидация шага 2
+        function validateStep2() {
+            const contractFile = document.getElementById('contractFile').files[0];
+            const identityFile = document.getElementById('identityFile').files[0];
+            
+            if (!contractFile) {
+                alert('Vă rugăm să încărcați contractul de credit');
+                return false;
+            }
+            
+            if (!identityFile) {
+                alert('Vă rugăm să încărcați documentul de identitate');
+                return false;
+            }
+            
+            // Проверка размера файлов
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            
+            if (contractFile.size > maxSize) {
+                alert('Contractul este prea mare. Dimensiune maximă: 10MB');
+                return false;
+            }
+            
+            if (identityFile.size > maxSize) {
+                alert('Documentul de identitate este prea mare. Dimensiune maximă: 10MB');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Обновление сводки
+        function updateSummary() {
+            const loanType = document.querySelector('select[name="loan_type"]');
+            const loanAmount = document.querySelector('input[name="loan_amount"]');
+            const description = document.querySelector('textarea[name="description"]');
+            
+            if (loanType) {
+                const selectedOption = loanType.options[loanType.selectedIndex];
+                document.getElementById('summaryType').textContent = selectedOption.text;
+            }
+            
+            if (loanAmount && loanAmount.value) {
+                document.getElementById('summaryAmount').textContent = 
+                    parseFloat(loanAmount.value).toLocaleString('ro-RO') + ' RON';
+            }
+            
+            if (description && description.value) {
+                document.getElementById('summaryDesc').textContent = 
+                    description.value.length > 100 
+                        ? description.value.substring(0, 100) + '...' 
+                        : description.value;
+            }
+            
+            // Подсчет файлов
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            let fileCount = 0;
+            fileInputs.forEach(input => {
+                if (input.files.length > 0) {
+                    fileCount++;
+                }
+            });
+            document.getElementById('summaryDocs').textContent = `${fileCount} fișiere`;
+        }
+        
+        // Отмена формы
+        function cancelForm() {
+            if (confirm('Sigur doriți să anulați această cerere? Toate datele vor fi pierdute.')) {
+                window.location.href = 'dashboard.html';
+            }
+        }
+        
+        // Настройка предпросмотра файлов
+        function setupFileUploadPreview() {
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            
+            fileInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    const file = this.files[0];
+                    if (file) {
+                        const previewId = this.id + 'Preview';
+                        let previewElement = document.getElementById(previewId);
+                        
+                        if (!previewElement) {
+                            previewElement = document.createElement('div');
+                            previewElement.id = previewId;
+                            previewElement.className = 'file-preview mt-2';
+                            this.parentNode.appendChild(previewElement);
+                        }
+                        
+                        const fileSize = formatFileSize(file.size);
+                        previewElement.innerHTML = `
+                            <div class="alert alert-info py-2">
+                                <i class="fas fa-file me-2"></i>
+                                ${file.name} (${fileSize})
+                            </div>
+                        `;
+                    }
+                    
+                    // Обновить сводку при изменении файлов
+                    updateSummary();
+                });
+            });
+        }
+        
+        // Форматирование размера файла
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Обработчик отправки формы
+        function handleNewCaseSubmit(event) {
+            event.preventDefault();
+            
+            // В реальном приложении здесь был бы AJAX запрос
+            alert('Cererea a fost trimisă cu succes! Veți primi un număr de caz în scurt timp.');
+            window.location.href = 'cases.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selectare Bancă - BNR Bank</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .bank-select-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .bank-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        .bank-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .bank-item:hover {
+            background: rgba(83, 109, 254, 0.1);
+            border-color: #536dfe;
+            transform: translateX(5px);
+        }
+        
+        .bank-item.selected {
+            background: rgba(83, 109, 254, 0.15);
+            border-color: #536dfe;
+        }
+        
+        .bank-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bank-select-container">
+        <div class="bank-card">
+            <div class="text-center mb-5">
+                <div class="icon-circle bg-primary text-white mb-3" style="width: 100px; height: 100px;">
+                    <i class="fas fa-university fa-3x"></i>
+                </div>
+                <h1 class="h2 fw-bold">Selectați Banca Dvs.</h1>
+                <p class="text-muted">Alegeți banca pentru care doriți să accesați sistemul</p>
+            </div>
+            
+            <div id="bankList" class="mb-4">
+                <!-- Банки будут добавлены через JavaScript -->
+            </div>
+            
+            <div class="text-center mt-4">
+                <button id="continueBtn" class="btn btn-primary btn-lg px-5" disabled>
+                    <i class="fas fa-arrow-right me-2"></i> Continuă la Autentificare
+                </button>
+            </div>
+            
+            <div class="text-center mt-4">
+                <small class="text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    După selectarea băncii, veți fi redirecționat la pagina de autentificare
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const banks = [
+            { id: 1, name: "Banca Națională a României", code: "BNR", color: "#1a237e" },
+            { id: 2, name: "BCR", code: "BCR", color: "#0077be" },
+            { id: 3, name: "BRD", code: "BRD", color: "#ed1c24" },
+            { id: 4, name: "Raiffeisen Bank", code: "RB", color: "#ffcc00" },
+            { id: 5, name: "ING Bank", code: "ING", color: "#ff6200" },
+            { id: 6, name: "UniCredit Bank", code: "UCB", color: "#e30613" },
+            { id: 7, name: "CEC Bank", code: "CEC", color: "#0054a6" },
+            { id: 8, name: "Alpha Bank", code: "AB", color: "#dc291e" },
+            { id: 9, name: "OTP Bank", code: "OTP", color: "#00a650" },
+            { id: 10, name: "Garanti BBVA", code: "GBBVA", color: "#0d5ba8" }
+        ];
+
+        let selectedBankId = null;
+
+        // Создание списка банков
+        function renderBankList() {
+            const bankList = document.getElementById('bankList');
+            bankList.innerHTML = '';
+            
+            banks.forEach(bank => {
+                const bankItem = document.createElement('div');
+                bankItem.className = 'bank-item';
+                bankItem.dataset.bankId = bank.id;
+                
+                bankItem.innerHTML = `
+                    <div class="bank-icon" style="background: ${bank.color}">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="mb-1">${bank.name}</h5>
+                        <small class="text-muted">Cod: ${bank.code}</small>
+                    </div>
+                    <div class="bank-select-indicator">
+                        <i class="fas fa-check-circle text-primary" style="opacity: 0"></i>
+                    </div>
+                `;
+                
+                bankItem.addEventListener('click', () => selectBank(bank.id));
+                bankList.appendChild(bankItem);
+            });
+        }
+
+        // Выбор банка
+        function selectBank(bankId) {
+            selectedBankId = bankId;
+            
+            // Сброс всех выделений
+            document.querySelectorAll('.bank-item').forEach(item => {
+                item.classList.remove('selected');
+                item.querySelector('.fa-check-circle').style.opacity = '0';
+            });
+            
+            // Выделение выбранного банка
+            const selectedItem = document.querySelector(`[data-bank-id="${bankId}"]`);
+            if (selectedItem) {
+                selectedItem.classList.add('selected');
+                selectedItem.querySelector('.fa-check-circle').style.opacity = '1';
+            }
+            
+            // Активация кнопки продолжения
+            document.getElementById('continueBtn').disabled = false;
+        }
+
+        // Продолжение к авторизации
+        document.getElementById('continueBtn').addEventListener('click', function() {
+            if (selectedBankId) {
+                // Сохраняем выбор банка в localStorage
+                localStorage.setItem('selectedBankId', selectedBankId);
+                localStorage.setItem('selectedBank', JSON.stringify(
+                    banks.find(b => b.id === selectedBankId)
+                ));
+                
+                // Переход на страницу авторизации
+                window.location.href = 'auth/login.html';
+            }
+        });
+
+        // Инициализация
+        renderBankList();
+
+        // Проверяем, есть ли сохраненный выбор банка
+        const savedBankId = localStorage.getItem('selectedBankId');
+        if (savedBankId) {
+            setTimeout(() => selectBank(parseInt(savedBankId)), 100);
+        }
+    </script>
+</body>
+</html>

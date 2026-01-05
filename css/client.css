@@ -1,0 +1,251 @@
+/* Client Specific Styles */
+:root {
+    --client-primary: #2c3e50;
+    --client-secondary: #3498db;
+    --client-accent: #e74c3c;
+    --client-success: #27ae60;
+    --client-warning: #f39c12;
+}
+
+/* Dashboard Widgets */
+.client-widget {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    border-left: 4px solid var(--client-secondary);
+    transition: all 0.3s;
+}
+
+.client-widget:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+/* Case Cards */
+.case-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    background: white;
+    transition: all 0.3s;
+}
+
+.case-card:hover {
+    border-color: var(--client-secondary);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.1);
+}
+
+.case-card-header {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.case-card-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.status-review {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.status-approved {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Forms */
+.client-form .form-label {
+    font-weight: 500;
+    color: var(--client-primary);
+}
+
+.client-form .form-control {
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px 15px;
+}
+
+.client-form .form-control:focus {
+    border-color: var(--client-secondary);
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+/* File Upload */
+.file-upload-area {
+    border: 2px dashed #bdc3c7;
+    border-radius: 10px;
+    padding: 40px 20px;
+    text-align: center;
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.file-upload-area:hover {
+    border-color: var(--client-secondary);
+    background: rgba(52, 152, 219, 0.05);
+}
+
+.file-upload-area.dragover {
+    border-color: var(--client-success);
+    background: rgba(39, 174, 96, 0.1);
+}
+
+/* Progress Bar */
+.progress-container {
+    background: #ecf0f1;
+    border-radius: 10px;
+    height: 10px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.progress-bar-client {
+    background: linear-gradient(90deg, var(--client-secondary), #2980b9);
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s;
+}
+
+/* Notifications */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--client-accent);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Action Buttons */
+.btn-client-primary {
+    background: linear-gradient(135deg, var(--client-primary), #34495e);
+    border: none;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.btn-client-primary:hover {
+    background: linear-gradient(135deg, #34495e, #2c3e50);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(44, 62, 80, 0.2);
+}
+
+/* Sidebar (if needed) */
+.client-sidebar {
+    background: var(--client-primary);
+    color: white;
+    min-height: calc(100vh - 76px);
+    padding: 20px 0;
+}
+
+.client-sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    padding: 12px 20px;
+    margin: 5px 10px;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.client-sidebar .nav-link:hover,
+.client-sidebar .nav-link.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.client-sidebar .nav-link i {
+    width: 20px;
+    margin-right: 10px;
+}
+
+/* Timeline */
+.timeline {
+    position: relative;
+    padding-left: 30px;
+    margin: 20px 0;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e0e0e0;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--client-secondary);
+    border: 2px solid white;
+    box-shadow: 0 0 0 3px var(--client-secondary);
+}
+
+.timeline-item.completed::before {
+    background: var(--client-success);
+    box-shadow: 0 0 0 3px var(--client-success);
+}
+
+.timeline-item.pending::before {
+    background: var(--client-warning);
+    box-shadow: 0 0 0 3px var(--client-warning);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .client-widget {
+        margin-bottom: 20px;
+    }
+    
+    .client-sidebar {
+        min-height: auto;
+        margin-bottom: 20px;
+    }
+    
+    .case-card {
+        padding: 15px;
+    }
+}

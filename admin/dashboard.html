@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ Панель - BNR Bank</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-dashboard">
+    <!-- Навигация -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background: rgba(26, 35, 126, 0.95);">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">
+                <i class="fas fa-university me-2"></i>
+                <strong>BNR Bank</strong>
+                <span class="ms-2 badge bg-light text-primary">Админ</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="dashboard.html">
+                            <i class="fas fa-tachometer-alt me-1"></i> Дашборд
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="cases.html">
+                            <i class="fas fa-clipboard-list me-1"></i> Заявки
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="users.html">
+                            <i class="fas fa-users me-1"></i> Пользователи
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="banks.html">
+                            <i class="fas fa-bank me-1"></i> Банки
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-shield me-1"></i>
+                            <span id="adminName">Администратор</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="showAdminProfile()">
+                                    <i class="fas fa-user-cog me-2"></i> Профиль
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="showSettings()">
+                                    <i class="fas fa-cog me-2"></i> Настройки
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="../auth/logout.html">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Выйти
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Хедер -->
+    <div class="admin-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-6 fw-bold admin-welcome">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Панель Администратора
+                    </h1>
+                    <p class="lead mb-0">
+                        Управление заявками на аннуляцию кредитов
+                    </p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="admin-bank-badge">
+                        <i class="fas fa-bank me-1"></i>
+                        <span id="adminBank">BNR</span>
+                        <span class="ms-2" id="adminRole">Супер Админ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="container mt-4">
+        <!-- Статистика -->
+        <div class="admin-stats-grid">
+            <div class="admin-stat-card total">
+                <div class="admin-stat-icon total">
+                    <i class="fas fa-file-contract"></i>
+                </div>
+                <h3 id="totalCases">0</h3>
+                <p class="text-muted mb-0">Всего заявок</p>
+                <small class="text-success">+12% за месяц</small>
+            </div>
+            
+            <div class="admin-stat-card pending">
+                <div class="admin-stat-icon pending">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3 id="pendingCases">0</h3>
+                <p class="text-muted mb-0">В ожидании</p>
+                <small class="text-warning">Требуют внимания</small>
+            </div>
+            
+            <div class="admin-stat-card urgent">
+                <div class="admin-stat-icon urgent">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <h3 id="urgentCases">0</h3>
+                <p class="text-muted mb-0">Срочные</p>
+                <small class="text-danger">Высокий приоритет</small>
+            </div>
+            
+            <div class="admin-stat-card active">
+                <div class="admin-stat-icon active">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h3 id="activeWorkers">0</h3>
+                <p class="text-muted mb-0">Активных работников</p>
+                <small class="text-info">В системе</small>
+            </div>
+        </div>
+
+        <!-- Быстрые действия -->
+        <div class="admin-quick-actions">
+            <a href="cases.html?status=pending" class="quick-action-btn">
+                <div class="quick-action-icon">
+                    <i class="fas fa-inbox"></i>
+                </div>
+                <span>Новые заявки</span>
+            </a>
+            
+            <a href="cases.html?priority=urgent" class="quick-action-btn">
+                <div class="quick-action-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <span>Срочные дела</span>
+            </a>
+            
+            <a href="users.html?role=console" class="quick-action-btn">
+                <div class="quick-action-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <span>Добавить работника</span>
+            </a>
+            
+            <a href="#" class="quick-action-btn" onclick="generateReport()">
+                <div class="quick-action-icon">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <span>Отчет за месяц</span>
+            </a>
+            
+            <a href="banks.html" class="quick-action-btn">
+                <div class="quick-action-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <span>Управление банками</span>
+            </a>
+            
+            <a href="#" class="quick-action-btn" onclick="showAuditLog()">
+                <div class="quick-action-icon">
+                    <i class="fas fa-history"></i>
+                </div>
+                <span>Журнал действий</span>
+            </a>
+        </div>
+
+        <div class="row">
+            <!-- Недавние заявки -->
+            <div class="col-lg-8">
+                <div class="admin-table-container">
+                    <div class="table-header p-3 border-bottom">
+                        <h5 class="mb-0">
+                            <i class="fas fa-history me-2"></i>
+                            Последние заявки
+                            <a href="cases.html" class="btn btn-sm btn-primary float-end">
+                                Все заявки <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </h5>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Номер дела</th>
+                                    <th>Клиент</th>
+                                    <th>Сумма</th>
+                                    <th>Статус</th>
+                                    <th>Приоритет</th>
+                                    <th>Дата</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentCasesTable">
+                                <!-- Данные загружаются через JS -->
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">
+                                        <i class="fas fa-spinner fa-spin me-2"></i>
+                                        Загрузка данных...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Активность системы -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-line me-2"></i>
+                            Статистика по статусам
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="statusChart" style="height: 200px;">
+                            <!-- График будет создан через JS -->
+                            <div class="text-center py-4">
+                                <i class="fas fa-chart-pie fa-2x text-muted mb-3"></i>
+                                <p class="text-muted">Загрузка статистики...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Системная информация -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Информация системы
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Версия системы</small>
+                            <strong>BNR Bank v2.1.4</strong>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Последнее обновление</small>
+                            <strong id="lastUpdate">05.01.2024</strong>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Активных пользователей</small>
+                            <strong id="activeUsers">142</strong>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Среднее время обработки</small>
+                            <strong id="avgProcessingTime">3.2 дня</strong>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <button class="btn btn-sm btn-outline-primary w-100" onclick="refreshSystem()">
+                                <i class="fas fa-sync-alt me-1"></i> Обновить данные
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer class="bg-light border-top mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text-muted">
+                        <i class="fas fa-university me-1"></i>
+                        BNR Bank - Админ Панель
+                        <span id="footerBankInfo" class="ms-2"></span>
+                    </span>
+                </div>
+                <div class="col-md-6 text-end">
+                    <span class="text-muted">
+                        <i class="fas fa-clock me-1"></i>
+                        <span id="currentTime">00:00:00</span>
+                        | <i class="fas fa-globe me-1"></i> RU
+                    </span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/admin.js"></script>
+    <script>
+        // Mock данные для админ панели
+        const adminData = {
+            stats: {
+                totalCases: 247,
+                pendingCases: 34,
+                urgentCases: 12,
+                activeWorkers: 8
+            },
+            recentCases: [
+                {
+                    id: 1,
+                    number: 'CASE-2024-015',
+                    client: 'Ion Popescu',
+                    amount: 150000,
+                    status: 'pending',
+                    statusText: 'В ожидании',
+                    priority: 'high',
+                    date: '15.01.2024',
+                    bank: 'BNR'
+                },
+                {
+                    id: 2,
+                    number: 'CASE-2024-014',
+                    client: 'Maria Ionescu',
+                    amount: 45000,
+                    status: 'review',
+                    statusText: 'На рассмотрении',
+                    priority: 'medium',
+                    date: '14.01.2024',
+                    bank: 'BCR'
+                },
+                {
+                    id: 3,
+                    number: 'CASE-2024-013',
+                    client: 'Andrei Georgescu',
+                    amount: 75000,
+                    status: 'approved',
+                    statusText: 'Одобрено',
+                    priority: 'low',
+                    date: '13.01.2024',
+                    bank: 'BRD'
+                },
+                {
+                    id: 4,
+                    number: 'CASE-2024-012',
+                    client: 'Elena Marinescu',
+                    amount: 120000,
+                    status: 'urgent',
+                    statusText: 'Срочно',
+                    priority: 'urgent',
+                    date: '12.01.2024',
+                    bank: 'ING'
+                },
+                {
+                    id: 5,
+                    number: 'CASE-2024-011',
+                    client: 'Mihai Dumitrescu',
+                    amount: 35000,
+                    status: 'rejected',
+                    statusText: 'Отклонено',
+                    priority: 'medium',
+                    date: '11.01.2024',
+                    bank: 'Raiffeisen'
+                }
+            ],
+            systemInfo: {
+                lastUpdate: '05.01.2024 14:30',
+                activeUsers: 142,
+                avgProcessingTime: '3.2 дня',
+                version: 'BNR Bank v2.1.4'
+            }
+        };
+
+        // Проверка авторизации
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const bank = JSON.parse(localStorage.getItem('selectedBank'));
+            
+            if (!user || !(user.role === 'admin' || user.role === 'super_admin')) {
+                window.location.href = '../auth/login.html';
+                return;
+            }
+            
+            // Установка данных администратора
+            document.getElementById('adminName').textContent = 
+                user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.username;
+            
+            document.getElementById('adminRole').textContent = 
+                user.role === 'super_admin' ? 'Супер Админ' : 'Администратор';
+            
+            // Установка данных банка
+            if (bank) {
+                document.getElementById('adminBank').textContent = bank.code;
+                document.getElementById('footerBankInfo').textContent = bank.name;
+            }
+            
+            // Обновление времени
+            function updateTime() {
+                const now = new Date();
+                document.getElementById('currentTime').textContent = 
+                    now.toLocaleTimeString('ru-RU');
+            }
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            // Загрузка данных
+            loadAdminDashboard();
+        });
+
+        // Загрузка данных админ панели
+        function loadAdminDashboard() {
+            // Статистика
+            document.getElementById('totalCases').textContent = adminData.stats.totalCases;
+            document.getElementById('pendingCases').textContent = adminData.stats.pendingCases;
+            document.getElementById('urgentCases').textContent = adminData.stats.urgentCases;
+            document.getElementById('activeWorkers').textContent = adminData.stats.activeWorkers;
+            
+            // Последние заявки
+            loadRecentCases();
+            
+            // Системная информация
+            document.getElementById('lastUpdate').textContent = adminData.systemInfo.lastUpdate;
+            document.getElementById('activeUsers').textContent = adminData.systemInfo.activeUsers;
+            document.getElementById('avgProcessingTime').textContent = adminData.systemInfo.avgProcessingTime;
+            
+            // Создание графика
+            createStatusChart();
+        }
+
+        // Загрузка последних заявок
+        function loadRecentCases() {
+            const tableBody = document.getElementById('recentCasesTable');
+            
+            let casesHTML = '';
+            adminData.recentCases.forEach(caseItem => {
+                const priorityClass = `priority-${caseItem.priority}`;
+                const statusClass = caseItem.status === 'pending' ? 'status-pending' :
+                                  caseItem.status === 'review' ? 'status-review' :
+                                  caseItem.status === 'approved' ? 'status-approved' :
+                                  caseItem.status === 'rejected' ? 'status-rejected' : 'status-pending';
+                
+                casesHTML += `
+                    <tr>
+                        <td>
+                            <strong>${caseItem.number}</strong><br>
+                            <small class="text-muted">${caseItem.bank}</small>
+                        </td>
+                        <td>${caseItem.client}</td>
+                        <td>${caseItem.amount.toLocaleString('ru-RU')} RON</td>
+                        <td>
+                            <span class="case-card-status ${statusClass}">
+                                ${caseItem.statusText}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="priority-badge ${priorityClass}">
+                                ${caseItem.priority === 'urgent' ? 'Срочно' :
+                                  caseItem.priority === 'high' ? 'Высокий' :
+                                  caseItem.priority === 'medium' ? 'Средний' : 'Низкий'}
+                            </span>
+                        </td>
+                        <td>${caseItem.date}</td>
+                    </tr>
+                `;
+            });
+            
+            tableBody.innerHTML = casesHTML;
+        }
+
+        // Создание графика статусов
+        function createStatusChart() {
+            const ctx = document.createElement('canvas');
+            ctx.id = 'statusChartCanvas';
+            document.getElementById('statusChart').innerHTML = '';
+            document.getElementById('statusChart').appendChild(ctx);
+            
+            // Mock данные для графика
+            const data = {
+                labels: ['Одобрено', 'На рассмотрении', 'В ожидании', 'Отклонено', 'Срочные'],
+                datasets: [{
+                    data: [45, 25, 15, 10, 5],
+                    backgroundColor: [
+                        '#28a745',
+                        '#17a2b8',
+                        '#ffc107',
+                        '#dc3545',
+                        '#f44336'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+            
+            const chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Показать профиль администратора
+        function showAdminProfile() {
+            alert('Редактирование профиля администратора');
+            // В реальном приложении здесь было бы модальное окно
+        }
+
+        // Показать настройки
+        function showSettings() {
+            alert('Настройки системы');
+            // В реальном приложении здесь было бы модальное окно
+        }
+
+        // Сгенерировать отчет
+        function generateReport() {
+            alert('Генерация отчета за месяц...');
+            // В реальном приложении здесь был бы экспорт отчета
+        }
+
+        // Показать журнал действий
+        function showAuditLog() {
+            alert('Открытие журнала действий системы');
+            // В реальном приложении здесь была бы отдельная страница
+        }
+
+        // Обновить систему
+        function refreshSystem() {
+            alert('Обновление данных системы...');
+            loadAdminDashboard();
+        }
+    </script>
+</body>
+</html>
